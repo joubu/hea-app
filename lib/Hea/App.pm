@@ -68,7 +68,7 @@ get '/libraries' => sub {
 get '/systempreferences' => sub {
     my $systempreferences = Hea::Data::syspref_repartition;
     my @prefs;
-    while ( my ( $pref_name, $values ) = each $systempreferences ) {
+    while ( my ( $pref_name, $values ) = each %$systempreferences ) {
         push @prefs, { syspref_name => $pref_name, values => to_json $values };
     }
 
