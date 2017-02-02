@@ -6,9 +6,20 @@ use Dancer::Plugin::Database;
 
 our $VERSION = '0.2';
 
-# retrieve the number of libraries declared
-sub getLibraryCount {
-    database->quick_count( 'library', {} );
+# retrieve the number of installations
+sub get_installations_quantity {
+    database->quick_count( 'installation', {} );
+}
+# retrieve the number of libraries
+sub get_libraries_quantity {
+    return database->selectrow_hashref(q|
+        SELECT SUM(counted) as sum, MAX(counted) as max, MIN(counted) as min, AVG(counted) as avg
+        FROM (
+            SELECT COUNT(*) AS counted
+            FROM library
+            GROUP BY koha_id
+        ) AS counts
+    |);
 }
 
 # retrieves the sum of biblios in all libraries
@@ -107,35 +118,73 @@ sub volumetry_range {
     ];
 }
 
-sub library_stats {
-    my ( $type ) = @_;
-    return unless $type;
-
+sub number_of_libraries_by_country {
     my $query = "
-        SELECT $type as name, COUNT(*) AS value
+        SELECT country as name, COALESCE(COUNT(*), 0) AS value
         FROM library
-        WHERE $type <> ''
-        GROUP BY $type
+        WHERE country <> ''
+        GROUP BY country
     ";
 
-    my $sth = database->prepare($query);
-    $sth->execute();
-    my $data = $sth->fetchall_arrayref( {} );
+    return database->selectall_arrayref($query, { Slice => {} } );
+}
 
-    return $data;
+sub get_installation {
+    my ( $public_id ) = @_;
+    return database->selectrow_hashref(q|
+        SELECT id, name, url, country, geolocation, library_type
+        FROM installation
+        WHERE id = ?
+    |, {}, $public_id);
+}
+
+sub get_libraries {
+    my ( $params ) = @_;
+    return if exists $params->{public_id} and not $params->{public_id};
+    return database->selectall_arrayref(q|
+        SELECT i.id, l.name, l.url, l.country, l.geolocation
+        FROM library l
+        LEFT JOIN installation i ON i.koha_id = l.koha_id
+    | . ( $params->{public_id} ? q| WHERE i.id = ? | : '' ) . q|
+        ORDER BY l.name
+    |, { Slice => {} }, $params->{public_id} || ());
+}
+
+sub libraries_by_country {
+    my $query = q|
+        SELECT i.id, l.name, l.url, l.country, l.geolocation
+        FROM library l
+        LEFT JOIN installation i ON i.koha_id = l.koha_id
+        WHERE   l.country <> ''
+            AND l.name <> ''
+        ORDER BY l.country
+    |;
+
+    return database->selectall_arrayref($query, { Slice => {} });
+}
+
+sub installations_by_type {
+    my $query = "
+        SELECT library_type as name, COALESCE(COUNT(*), 0) AS value
+        FROM installation
+        WHERE library_type <> ''
+        GROUP BY library_type
+    ";
+
+    return database->selectall_arrayref($query, { Slice => {} } );
 }
 
 sub libraries_name_and_url {
     my $query = q|
-            SELECT name, url
-            FROM library
-            WHERE name <> '' OR url <> ''
-            ORDER by name
+        SELECT i.id, l.name, l.url, l.country, l.geolocation
+        FROM library l
+        LEFT JOIN installation i ON i.koha_id = l.koha_id
+        WHERE l.name <> ''
+        ORDER BY l.name
     |;
-    my $sth = database->prepare($query);
-    $sth->execute();
-
-    return $sth->fetchall_arrayref( {} );
+    return database->selectall_arrayref( $query, { Slice => {} } );
 }
+
+
 
 1;

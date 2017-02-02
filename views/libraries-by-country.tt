@@ -1,0 +1,19 @@
+<div class="jumbotron">
+  <h1>Libraries by country</h1>
+  <p>Below is the list of libraries that have shared their names and url </p>
+</div>
+
+<a href="/libraries">See all libraries</a>
+| See by country
+| <a href="/libraries-on-a-map">See on a map</a>
+
+<div id="page">
+    [% FOR country IN libraries.keys.sort %]
+        <h2>[% country | html %]
+        <ul>
+            [% FOR lib IN libraries.$country %]
+                <li> [% lib.name | html %][% IF lib.url %] - [% lib.url | html %][% END %]</li>
+            [% END %]
+      </ul>
+    [% END %]
+</div>

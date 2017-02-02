@@ -12,6 +12,11 @@
 /* ]]> */</script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
+    [% IF v == 'library' OR v == 'libraries-on-a-map' %]
+        <link rel="stylesheet" href="[% request.uri_base %]/lib/leaflet/leaflet.css" />
+        <script src="[% request.uri_base %]/lib/leaflet/leaflet.js"></script>
+    [% END %]
+
   </head>
   <body  role="document">
         <!-- Fixed navbar -->

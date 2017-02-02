@@ -1,0 +1,44 @@
+<div class="jumbotron">
+  <h1>Libraries on a map</h1>
+  <p>Below is the list of libraries on a map</p>
+</div>
+
+<a href="/libraries">See all libraries</a>
+| <a href="/libraries-by-country">See by country</a>
+| See on a map
+
+<div id="page">
+     <div id="mapid" style="width: 600px; height: 400px; margin-left: 40%:"></div>
+</div>
+
+<script>
+    var map = L.map('mapid').setView([0,0], 1);
+    L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+    }).addTo(map);
+
+    var markers = new Array();
+    function add_to_map(elt, latlng) {
+        var marker = markers[elt.id];
+        if (marker) map.removeLayer(marker);
+        marker = L.marker(latlng).addTo(map);
+        marker.bindPopup(elt.text);
+        marker.on('mouseover', function (e) {this.openPopup(); });
+        marker.on('mouseout',  function (e) {this.closePopup();});
+        markers.push( marker );
+    }
+
+    [% FOR library IN libraries %]
+        [% NEXT UNLESS library.geolocation %]
+        add_to_map( { 'text': "[% library.name | html %]" }, [ [% library.geolocation | html %] ] );
+    [% END %]
+    [% IF installation.geolocation %]
+        add_to_map( { 'text': "[% installation.name | html %]" }, [ [% installation.geolocation | html %] ] );
+    [% END %]
+
+    // Auto zoom
+    var group = new L.featureGroup(markers);
+    if ( group.getBounds().isValid() ) map.fitBounds(group.getBounds());
+</script>

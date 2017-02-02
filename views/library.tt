@@ -1,0 +1,93 @@
+<div class="jumbotron">
+    [% IF installation %]
+        [% IF installation.name %]
+            <h1>Koha installation #[% installation.id | html%]</h1>
+        [% ELSE %]
+            <h1>Unknown Koha installation</h1>
+        [% END %]
+    [% ELSE %]
+        This library does not longer exist.
+    [% END %]
+</div>
+
+
+<div id="page">
+    [% IF installation %]
+        [% IF installation.name %]
+            <h2>[% installation.name | html %]</h2>
+        [% ELSE %]
+            <h2>Unkown installation name</h2>
+        [% END %]
+        <p>URL: [% IF installation.url %]<a href="[% UNLESS installation.url.match('^http') %]http://[% END %][% installation.url | url %]">[% installation.url | html %]</a>[% ELSE %]No url given.[% END %]</p>
+        <p>Installation type:
+            [% IF installation.library_type %]
+                [% SWITCH installation.library_type %]
+                [% CASE 'public' %]Public
+                [% CASE 'school' %]School
+                [% CASE 'academic' %]Academic
+                [% CASE 'research' %]Research
+                [% CASE 'private' %]Private
+                [% CASE 'societyAssociation' %]Society or association
+                [% CASE 'corporate' %]Corporate
+                [% CASE 'government' %]Government
+                [% CASE 'religiousOrg' %]Religious organization
+                [% CASE 'subscription' %]Subscription
+                [% CASE %][% installation.library_type | html %]
+                [% END %]
+            [% ELSE %]
+                Not specified.
+            [% END %]
+        </p>
+        <p>Country: [% IF installation.country %][% installation.country | html %][% ELSE %]Not specified.[% END %]</p>
+
+        <table id="lib_name_url">
+          <tr>
+            <td> Name </td>
+            <td> URL </td>
+            <td> Country </td>
+          </tr>
+        [% FOR library IN libraries %]
+          <tr>
+            <td> [% library.name | html %] </td>
+            <td> [% library.url | html %] </td>
+            <td> [% library.country | html %] </td>
+          </tr>
+        [% END %]
+        </table>
+    [% ELSE %]
+        This library does not longer exist.
+    [% END %]
+     <div id="mapid" style="width: 600px; height: 400px; margin-left: 40%:"></div>
+</div>
+
+<script>
+    var map = L.map('mapid').setView([0,0], 1);
+    L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+    }).addTo(map);
+
+    var markers = new Array();
+    function add_to_map(elt, latlng) {
+        var marker = markers[elt.id];
+        if (marker) map.removeLayer(marker);
+        marker = L.marker(latlng).addTo(map);
+        marker.bindPopup(elt.text);
+        marker.on('mouseover', function (e) {this.openPopup(); });
+        marker.on('mouseout',  function (e) {this.closePopup();});
+        markers.push( marker );
+    }
+
+    [% FOR library IN libraries %]
+        [% NEXT UNLESS library.geolocation %]
+        add_to_map( { 'text': "[% library.name | html %]" }, [ [% library.geolocation | html %] ] );
+    [% END %]
+    [% IF installation.geolocation %]
+        add_to_map( { 'text': "[% installation.name | html %]" }, [ [% installation.geolocation | html %] ] );
+    [% END %]
+
+    // Auto zoom
+    var group = new L.featureGroup(markers);
+    if ( group.getBounds().isValid() ) map.fitBounds(group.getBounds());
+</script>

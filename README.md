@@ -16,7 +16,7 @@ Data collected is available under the CC-BY-SA 4.0 License
  * git clone https://github.com/biblibre/hea-app.git
  * git clone https://github.com/biblibre/hea-ws.git
 
- * Create a database whith the schema in hea-ws/sql/schema.sql
+ * Create a database whith the schema in hea-app/sql/schema.sql
  * Optional : Import mock data (hea-app/sql/mock-data.sql)
 
  * copy hea-app/environments/config.yml to hea-app/environments/production.yml
@@ -67,18 +67,40 @@ hea-app$ ./bin/app.pl
 +------------+--------------+------+-----+---------+-------+
 | Field      | Type         | Null | Key | Default | Extra |
 +------------+--------------+------+-----+---------+-------+
-| library_id | varchar(32)  | NO   |     | NULL    |       |
+| koha_id    | varchar(32)  | NO   |     | NULL    |       |
 | name       | varchar(255) | NO   |     | NULL    |       |
 | value      | text         | YES  |     | NULL    |       |
 +------------+--------------+------+-----+---------+-------+
 ```
 
+ * Installation table
+```
++-------------------+--------------+------+-----+-------------------+-----------------------------+
+| Field             | Type         | Null | Key | Default           | Extra                       |
++-------------------+--------------+------+-----+-------------------+-----------------------------+
+| koha_id           | varchar(32)  | NO   | PRI | NULL              |                             |
+| name              | varchar(255) | YES  |     | NULL              |                             |
+| url               | varchar(255) | YES  |     | NULL              |                             |
+| country           | varchar(255) | NO   |     |                   |                             |
+| geolocation       | varchar(64)  | NO   |     |                   |                             |
+| library_type      | varchar(255) | NO   |     |                   |                             |
+| creation_time     | timestamp    | YES  |     | NULL              |                             |
+| modification_time | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++-------------------+--------------+------+-----+-------------------+-----------------------------+
+```
+
  * Library table
 ```
-+--------------------------+----------------------------+--------------------+--------------+---------+
-| library_id               | name                       | url                | library_type | country |
-+--------------------------+----------------------------+--------------------+--------------+---------+
-| 'RcP73COKh93YWLmOLkLx5Q' | hea experimental library   | http://example.com | UNIVERSITY   | France  |
-+--------------------------+----------------------------+--------------------+--------------+---------+
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| library_id  | int(11)      | NO   | PRI | NULL    | auto_increment |
+| koha_id     | varchar(32)  | NO   | MUL | NULL    |                |
+| name        | varchar(255) | YES  |     | NULL    |                |
+| url         | varchar(255) | YES  |     | NULL    |                |
+| country     | varchar(255) | NO   |     |         |                |
+| geolocation | varchar(64)  | NO   |     |         |                |
++-------------+--------------+------+-----+---------+----------------+
+
 ```
 

@@ -9,7 +9,8 @@ use I18N::LangTags::Detect;
 
 get '/' => sub {
     my @languages     = I18N::LangTags::Detect::detect();
-    my $library_count = Hea::Data::getLibraryCount;
+    my $installations_quantity = Hea::Data::get_installations_quantity;
+    my $libraries_quantity     = Hea::Data::get_libraries_quantity;
 
     my $biblio_stats       = Hea::Data::volumetry_stats('biblio');
     my $authority_stats    = Hea::Data::volumetry_stats('auth_header');
@@ -28,11 +29,12 @@ get '/' => sub {
     my $reserve_volumetry      = to_json Hea::Data::volumetry_range('old_reserves');
     my $order_volumetry        = to_json Hea::Data::volumetry_range('aqorders');
     my $subscription_volumetry = to_json Hea::Data::volumetry_range('subscription');
-    my $country_volumetry      = to_json Hea::Data::library_stats('country');
-    my $type_volumetry         = to_json Hea::Data::library_stats('library_type');
+    my $country_volumetry      = to_json Hea::Data::number_of_libraries_by_country;
+    my $type_volumetry         = to_json Hea::Data::installations_by_type;
 
     template 'index' => {
-        library_count          => $library_count,
+        installations_quantity => $installations_quantity,
+        libraries_quantity     => $libraries_quantity,
         biblio_stats           => $biblio_stats,
         authority_stats        => $authority_stats,
         item_stats             => $item_stats,
@@ -62,6 +64,40 @@ get '/libraries' => sub {
     template 'libraries' => {
         libraries => $libs,
         v => 'libraries',
+    };
+};
+
+get '/libraries/:public_id' => sub {
+    my $public_id = param('public_id');
+    my $installation = Hea::Data::get_installation( $public_id );
+    my $libraries = Hea::Data::get_libraries( { public_id => $public_id } );
+
+    template 'library' => {
+        installation => $installation,
+        libraries => $libraries,
+        v => 'library',
+    };
+};
+
+get '/libraries-by-country' => sub {
+    my $libraries = Hea::Data::libraries_by_country();
+
+    my $per_country;
+    for my $library ( @$libraries ) {
+        push @{ $per_country->{$library->{country}} }, $library;
+    }
+    template 'libraries-by-country' => {
+        libraries => $per_country,
+        v => 'libraries-by-country',
+    };
+};
+
+get '/libraries-on-a-map' => sub {
+    my $libraries = Hea::Data::get_libraries();
+
+    template 'libraries-on-a-map' => {
+        libraries => $libraries,
+        v => 'libraries-on-a-map',
     };
 };
 
