@@ -56,6 +56,7 @@ sub syspref_repartition {
         SELECT name, value, count(*) as count
         FROM systempreference
         GROUP BY name, value
+        ORDER BY value
     |);
     $sth->execute;
     my $data = $sth->fetchall_arrayref( {} );
