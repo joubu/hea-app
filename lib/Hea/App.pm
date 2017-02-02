@@ -69,6 +69,9 @@ get '/systempreferences' => sub {
     my $systempreferences = Hea::Data::syspref_repartition;
     my @prefs;
     while ( my ( $pref_name, $values ) = each %$systempreferences ) {
+        if ( $pref_name eq 'version' ) {
+            $values = [ sort { $b->{name} <=> $a->{name} } @$values ];
+        }
         push @prefs, { syspref_name => $pref_name, values => to_json $values };
     }
 
