@@ -74,6 +74,7 @@ get '/systempreferences' => sub {
         }
         push @prefs, { syspref_name => $pref_name, values => to_json $values };
     }
+    @prefs = sort { $a->{syspref_name} cmp $b->{syspref_name} } @prefs;
 
     template 'systempreferences' => {
         systempreferences => \@prefs,
