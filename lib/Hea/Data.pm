@@ -3,7 +3,6 @@ package Hea::Data;
 use Modern::Perl;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
-use Data::Dumper;
 
 our $VERSION = '0.2';
 
@@ -17,7 +16,7 @@ sub volumetry_stats {
     my ( $type ) = @_;
     return unless $type;
     my $sth   = database->prepare(q|
-        SELECT sum(value) as sum, AVG(value) as avg, MAX(value) as max, stddev_pop(value) as std
+        SELECT COALESCE(sum(value), 0) as sum, COALESCE(AVG(value), 0) as avg, COALESCE(MAX(value), 0) as max, COALESCE(MIN(value), 0) as min, stddev_pop(value) as std
         FROM volumetry
         WHERE name=?
     |);

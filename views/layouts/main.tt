@@ -67,31 +67,31 @@
                 wrapper_id: 'biblio_volumetry',
                 data: [% biblio_volumetry %],
                 title: "Bibliographic record",
-		caption: "Total: [% biblio_stats.sum | format_number %]. Average: [% biblio_stats.avg | format_number %]. Minimum: [% biblio_stats.min | format_number %]. Maximum: [% biblio_stats.max | format_number %]"
+                caption: "Total: [% biblio_stats.sum | format_number %]. Average: [% biblio_stats.avg | format_number %]. Minimum: [% biblio_stats.min | format_number %]. Maximum: [% biblio_stats.max | format_number %]"
               });
               build_svg({
                 wrapper_id: 'authority_volumetry',
                 data: [% authority_volumetry %],
                 title: "Number of authorities",
-		caption: "Total: [% authority_stats.sum | format_number %]. Average: [% authority_stats.avg | format_number %]. Minimum: [% authority_stats.min | format_number %]. Maximum: [% authority_stats.max | format_number %]"
+                caption: "Total: [% authority_stats.sum | format_number %]. Average: [% authority_stats.avg | format_number %]. Minimum: [% authority_stats.min | format_number %]. Maximum: [% authority_stats.max | format_number %]"
               });
               build_svg({
                 wrapper_id: 'item_volumetry',
                 data: [% item_volumetry %],
                 title: "Total items",
-		caption: "Total: [% item_stats.sum | format_number %]. Average: [% item_stats.avg | format_number %]. Minimum: [% item_stats.min | format_number %]. Maximum: [% item_stats.max | format_number %]"
+                caption: "Total: [% item_stats.sum | format_number %]. Average: [% item_stats.avg | format_number %]. Minimum: [% item_stats.min | format_number %]. Maximum: [% item_stats.max | format_number %]"
               });
               build_svg({
                 wrapper_id: 'patron_volumetry',
                 data: [% patron_volumetry %],
                 title: "Number of patrons",
-		caption: "Total: [% patron_stats.sum | format_number %]. Average: [% patron_stats.avg | format_number %]. Minimum: [% patron_stats.min | format_number %]. Maximum: [% patron_stats.max | format_number %]"
+                caption: "Total: [% patron_stats.sum | format_number %]. Average: [% patron_stats.avg | format_number %]. Minimum: [% patron_stats.min | format_number %]. Maximum: [% patron_stats.max | format_number %]"
               });
               build_svg({
                 wrapper_id: 'issue_volumetry',
                 data: [% issue_volumetry %],
                 title: "Total issues",
-		caption: "Total: [% issue_stats.sum | format_number %]. Average: [% issue_stats.avg | format_number %]. Minimum: [% issue_stats.min | format_number %]. Maximum: [% issue_stats.max | format_number %]"
+                caption: "Total: [% issue_stats.sum | format_number %]. Average: [% issue_stats.avg | format_number %]. Minimum: [% issue_stats.min | format_number %]. Maximum: [% issue_stats.max | format_number %]"
               });
               build_svg({
                 wrapper_id: 'reserve_volumetry',
