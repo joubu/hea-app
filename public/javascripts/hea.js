@@ -49,7 +49,7 @@ function build_barchart (params) {
     .enter().append("rect")
     .attr("x", left_width)
     .attr("y", function(d, i) { return y(i) })
-    .attr("width", x)
+    .attr("width", function(d) { var xx = x(d); if ( xx < 8 ) xx = 8; return xx;  })
     .attr("height", bar_height);
  
   chart
@@ -65,7 +65,7 @@ function build_barchart (params) {
   chart.selectAll("text.value")
     .data(values)
     .enter().append("text")
-    .attr("x", function(d) { var xx = x(d); if ( xx < 11 ) xx = 11; return xx + left_width - 1;  })
+    .attr("x", function(d) { var xx = x(d); if ( xx < 11 ) xx = 11; return xx + left_width + 3 ;  })
     .attr("y", function(d, i) { return y(i) + yRangeBand/2;})
     .attr("dx", -5)
     .attr("dy", ".36em")

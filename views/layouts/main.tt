@@ -114,14 +114,14 @@
                 title: "Subscriptions"
               });
               build_svg({
-                wrapper_id: 'country_volumetry',
-                data: [% country_volumetry %],
-                title: "Countries"
-              });
-              build_svg({
                 wrapper_id: 'type_volumetry',
                 data: [% type_volumetry %],
                 title: "Type"
+              });
+              build_svg({
+                wrapper_id: 'country_volumetry',
+                data: [% country_volumetry %],
+                title: "Countries"
               });
             [% ELSIF ( v == 'systempreferences' ) %]
               [% FOR pref IN systempreferences %]
