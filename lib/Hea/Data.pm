@@ -91,13 +91,13 @@ sub volumetry_range {
 
     my $range;
     if ( $type eq 'borrowers' || $type eq 'old_reserves' ) {
-        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000, 5 => 25000, 6 => 50000 };
+        $range = { 1 => 0, 2 => 1000, 3 => 10000, 4 => 25000, 5 => 50000 };
     } elsif ( $type eq 'subscription' || $type eq 'aqorders' ) {
-        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000 };
+        $range = { 1 => 0, 2 => 1000, 3 => 10000 };
     } elsif ( $type eq 'old_issues' ) {
-        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000, 5 => 25000, 6 => 50000, 7 => 250000, 8 => 1000000, 9 => 2500000, 10 => 5000000 };
+        $range = { 1 => 0, 2 => 1000, 3 => 10000, 4 => 25000, 5 => 50000, 6 => 250000, 7 => 1000000, 8 => 2500000, 9 => 5000000 };
     } elsif ( $type eq 'biblio' || $type eq 'auth_header' || $type eq 'items' ) {
-        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000, 5 => 25000, 6 => 50000, 7 => 250000, 8 => 1000000 };
+        $range = { 1 => 0, 2 => 1000, 3 => 10000, 4 => 25000, 5 => 50000, 6 => 250000, 7 => 1000000 };
     } else {
         $range = { 1 => 15000, 2 => 50000, 3 => 150000 };
     }
@@ -106,7 +106,9 @@ sub volumetry_range {
     my $nb_intervals = scalar keys %$range;
     foreach my $entry (@$data) {
         my $num = $entry->{value} || 0;
-        if ( $num < $range->{1} ) {
+        if ( $range->{1} == 0 and $num == 0 ) {
+            $vol->{1}++;
+        } elsif ( $num < $range->{1} ) {
             $vol->{1}++;
         }  elsif ( $num > $range->{$nb_intervals} ) {
             $vol->{$nb_intervals+1}++;
@@ -131,7 +133,7 @@ sub volumetry_range {
             $min = $range->{$i-1} + 1;
             $max = $range->{$i};
         }
-        my $name = $min . ( $max ? '-' . $max : '+' );
+        my $name = $min . ( $max ? '-' . $max : $min ? '+' : '' );
         push @ranges, { name => $name, value => $vol->{$i} || 0 } ;
     }
     return \@ranges;
