@@ -90,32 +90,51 @@ sub volumetry_range {
     my $data = $sth->fetchall_arrayref( {} );
 
     my $range;
-    if ( $type eq 'borrowers' || $type eq 'subscription' || $type eq 'aqorders' || $type eq 'old_reserves' ) {
-         $range = { 1 => 1500, 2 => 5000, 3 => 15000 };
+    if ( $type eq 'borrowers' || $type eq 'old_reserves' ) {
+        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000, 5 => 25000, 6 => 50000 };
+    } elsif ( $type eq 'subscription' || $type eq 'aqorders' ) {
+        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000 };
+    } elsif ( $type eq 'old_issues' ) {
+        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000, 5 => 25000, 6 => 50000, 7 => 250000, 8 => 1000000, 9 => 2500000, 10 => 5000000 };
+    } elsif ( $type eq 'biblio' || $type eq 'auth_header' || $type eq 'items' ) {
+        $range = { 1 => 10, 2 => 100, 3 => 1000, 4 => 10000, 5 => 25000, 6 => 50000, 7 => 250000, 8 => 1000000 };
     } else {
         $range = { 1 => 15000, 2 => 50000, 3 => 150000 };
     }
 
     my $vol;
+    my $nb_intervals = scalar keys %$range;
     foreach my $entry (@$data) {
         my $num = $entry->{value} || 0;
         if ( $num < $range->{1} ) {
             $vol->{1}++;
-        } elsif ( $num > $range->{1} and $num <= $range->{2} ) {
-            $vol->{2}++;
-        } elsif ( $num > $range->{2} and $num <= $range->{3} ) {
-            $vol->{3}++;
-        } elsif ( $num > $range->{3} ) {
-            $vol->{4}++;
+        }  elsif ( $num > $range->{$nb_intervals} ) {
+            $vol->{$nb_intervals+1}++;
+        } else {
+            for my $i ( 1 .. $nb_intervals - 1 ) {
+                if ( $num > $range->{$i} and $num <= $range->{$i+1} ) {
+                    $vol->{$i+1}++;
+                }
+            }
         }
     }
 
-    return [
-        {name => "0-$range->{1}", value => $vol->{1} || 0},
-        {name => "$range->{1}-$range->{2}", value => $vol->{2} || 0},
-        {name => "$range->{2}-$range->{3}", value => $vol->{3} || 0},
-        {name => "$range->{3}+", value => $vol->{4} || 0},
-    ];
+    my @ranges;
+    for my $i ( 1 .. $nb_intervals + 1) {
+        my ( $min, $max );
+        if ( $i == 1 ) {
+            $min = 0;
+            $max = $range->{$i};
+        } elsif ( $i == $nb_intervals + 1) {
+            $min = $range->{$i - 1} + 1;
+        } else {
+            $min = $range->{$i-1} + 1;
+            $max = $range->{$i};
+        }
+        my $name = $min . ( $max ? '-' . $max : '+' );
+        push @ranges, { name => $name, value => $vol->{$i} || 0 } ;
+    }
+    return \@ranges;
 }
 
 sub number_of_libraries_by_country {
