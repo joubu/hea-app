@@ -1,41 +1,40 @@
 .chart {
-  background: #B9BEC0;
+  background: #f4f8f9;
   float: left;
   margin: 1%;
   width: 48%;
 }
- 
+
 .chart rect {
   stroke: white;
   fill: steelblue;
 }
- 
+
 .chart text {
   fill: white;
-  font-weight: bold;  
+  font-weight: bold;
 }
- 
+
 .chart text.variable {
-  fill: #000;
+   fill: #004D99;
 }
- 
+
 .chart line {
-  stroke: #c1c1c1;
+  stroke: blue;
 }
- 
+
 .chart .title {
-  /*fill: #FFF;*/
   fill: black;
-  font-weight: bold;  
+  font-weight: bold;
 }
- 
+
 .chart rect {
   stroke: none;
 }
- 
+
 .chart rect:hover {
-  fill: #64707D;
-} 
+  fill: #538200;
+}
 
 table {
   margin: 25px;
@@ -74,4 +73,27 @@ table#value td {
 table#value tbody tr th {
    text-align: left;
    width: 10%;
+}
+
+.navbar {
+    background: #e6f0f2 none repeat scroll 0 0;
+    border: medium none;
+    box-shadow: none;
+}
+.navbar-inverse .navbar-brand,
+.navbar-inverse .navbar-nav > li > a {
+    color: #004D99;
+}
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-nav > li > a:hover {
+    color: #538200;
+}
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus {
+    color: #538200;
+    background-color: #e6f0f2;
+}
+.jumbotron {
+    background-image: -moz-linear-gradient(center top , rgb(230, 240, 242) 1%, rgb(255, 255, 255) 99%);
 }
