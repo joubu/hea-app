@@ -42,7 +42,7 @@ CREATE TABLE library (
     country VARCHAR(255) NOT NULL DEFAULT '',
     geolocation VARCHAR(64) NOT NULL DEFAULT '',
     PRIMARY KEY (library_id),
-    CONSTRAINT library_installation FOREIGN KEY (koha_id) REFERENCES installation(koha_id)
+    CONSTRAINT library_installation FOREIGN KEY (koha_id) REFERENCES installation(koha_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |);
 $dbh->do(q|
@@ -51,7 +51,7 @@ CREATE TABLE volumetry (
     name VARCHAR(255) NOT NULL,
     value INTEGER NOT NULL DEFAULT 0,
     inserted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT vol_install FOREIGN KEY (koha_id) REFERENCES installation(koha_id)
+    CONSTRAINT vol_install FOREIGN KEY (koha_id) REFERENCES installation(koha_id)  ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |);
 $dbh->do(q|
@@ -59,7 +59,7 @@ CREATE TABLE systempreference (
     koha_id VARCHAR(32) NOT NULL,
     name VARCHAR(255) NOT NULL,
     value TEXT NULL,
-    CONSTRAINT syspref_install FOREIGN KEY (koha_id) REFERENCES installation(koha_id)
+    CONSTRAINT syspref_install FOREIGN KEY (koha_id) REFERENCES installation(koha_id)  ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 |);
 
