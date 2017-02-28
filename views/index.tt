@@ -13,12 +13,9 @@
 
 <div id="page">
 
-    <p>This website has collected the statistics from [% installations_quantity %] Koha installations. They represent a total of [% libraries_quantity.sum | format_number %] libraries. The largest installation has [% libraries_quantity.max | format_number %] libraries, the smallest amount has [% libraries_quantity.min | format_number %]. The average is [% libraries_quantity.avg | format_number %].</p>
-
   <div class="panel panel-default">
     <!-- Default panel contents -->
     <div class="panel-heading">Some numbers from the [% library_count %] libraries sharing data</div>
-
 
     <!-- Table -->
     <table class="table table-bordered" id="value">
@@ -33,6 +30,14 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <th scope="row">Libraries</th>
+          <td>[% libraries_quantity.sum | format_number %]</td>
+          <td>[% libraries_quantity.max | format_number %]</td>
+          <td> - </td>
+          <td>[% libraries_quantity.avg | format_number %]</td>
+          <td> - </td>
+        </tr>
         <tr>
           <th scope="row">Biblios</th>
           <td>[% biblio_stats.sum | format_number %]</td>
