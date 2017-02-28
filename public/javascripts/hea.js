@@ -26,7 +26,7 @@ function build_barchart (params) {
 
   var height = bar_height * variables.length;
 
-  var left_width = 135;
+  var left_width = 150;
 
   var yRangeBand = bar_height + 2;
   y = function(i) { return yRangeBand * i; };
