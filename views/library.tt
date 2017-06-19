@@ -81,10 +81,16 @@
 
     [% FOR library IN libraries %]
         [% NEXT UNLESS library.geolocation %]
-        add_to_map( { 'text': "[% library.name | html %]" }, [ [% library.geolocation | html %] ] );
+        try {
+            var latlng = L.latLng([% library.geolocation | html %]);
+            add_to_map( { 'text': "[% library.name | html %]" }, latlng );
+        } catch(e) {}
     [% END %]
     [% IF installation.geolocation %]
-        add_to_map( { 'text': "[% installation.name | html %]" }, [ [% installation.geolocation | html %] ] );
+        try {
+            var latlng = L.latLng([% installation.geolocation | html %]);
+            add_to_map( { 'text': "[% installation.name | html %]" }, latlng );
+        } catch(e) {}
     [% END %]
 
     // Auto zoom
