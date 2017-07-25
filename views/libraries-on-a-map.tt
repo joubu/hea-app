@@ -27,6 +27,7 @@
         marker.bindPopup(elt.text);
         marker.on('mouseover', function (e) {this.openPopup(); });
         marker.on('mouseout',  function (e) {this.closePopup();});
+        marker.on('click',     function (e) {window.open('/libraries/' + elt.id, 'popup', 'width=800,height=400,resizable=yes,toolbar=false,scrollbars=yes,top');});
         markers.push( marker );
     }
 
@@ -35,7 +36,7 @@
         [% NEXT UNLESS library.geolocation.match('^-?[\d\.]+,-?[\d\.]+$') %];
         try {
             var latlng = L.latLng([% library.geolocation | html %]);
-            add_to_map( { 'text': "[% library.name | html %]" }, latlng );
+            add_to_map( { 'text': "[% library.name | html %]", 'id': "[% library.id | html %]" }, latlng );
         } catch(e) {}
     [% END %]
 
