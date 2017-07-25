@@ -40,6 +40,7 @@
         </p>
         <p>Country: [% IF installation.country %][% installation.country | html %][% ELSE %]Not specified.[% END %]</p>
 
+        [% SET invalid_geoloc = [] %]
         <table id="lib_name_url">
           <tr>
             <td> Name </td>
@@ -47,6 +48,9 @@
             <td> Country </td>
           </tr>
         [% FOR library IN libraries %]
+	  [% IF library.geolocation AND NOT library.geolocation.match('^-?[\d\.]+,-?[\d\.]+$') %]
+              [% invalid_geoloc.push(library.geolocation) %]
+          [% END %]
           <tr>
             <td> [% library.name | html %] </td>
             <td> [% library.url | html %] </td>
@@ -54,6 +58,10 @@
           </tr>
         [% END %]
         </table>
+
+        [% FOR geoloc IN invalid_geoloc.unique %]
+            Wrong geolocation data: "[% geoloc %]"
+        [% END %]
     [% ELSE %]
         This library does not longer exist.
     [% END %]
@@ -81,12 +89,13 @@
 
     [% FOR library IN libraries %]
         [% NEXT UNLESS library.geolocation %]
+        [% NEXT UNLESS library.geolocation.match('^-?[\d\.]+,-?[\d\.]+$') %]
         try {
             var latlng = L.latLng([% library.geolocation | html %]);
             add_to_map( { 'text': "[% library.name | html %]" }, latlng );
         } catch(e) {}
     [% END %]
-    [% IF installation.geolocation %]
+    [% IF installation.geolocation AND installation.geolocation.match('^-?[\d\.]+,-?[\d\.]+$') %]
         try {
             var latlng = L.latLng([% installation.geolocation | html %]);
             add_to_map( { 'text': "[% installation.name | html %]" }, latlng );
