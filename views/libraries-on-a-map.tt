@@ -32,6 +32,7 @@
 
     [% FOR library IN libraries %]
         [% NEXT UNLESS library.geolocation %]
+        [% NEXT UNLESS library.geolocation.match('^-?[\d\.]+,-?[\d\.]+$') %];
         try {
             var latlng = L.latLng([% library.geolocation | html %]);
             add_to_map( { 'text': "[% library.name | html %]" }, latlng );
